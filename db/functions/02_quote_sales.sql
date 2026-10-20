@@ -52,11 +52,11 @@ BEGIN
       SELECT p_qi,
         CASE WHEN NOT ro.is_subcontracted THEN 'machining' WHEN ro.subcon_price_key LIKE 'ht\_%' THEN 'heat_treat' ELSE 'surface' END,
         r.item_id, ro.id,
-        CASE WHEN ro.is_subcontracted THEN ro.subcon_basis_per_unit*r.qty ELSE (ro.std_hours + ro.setup_hours/qi.qty)*r.qty END,
+        CASE WHEN ro.is_subcontracted THEN ro.subcon_basis_per_unit*r.qty ELSE (ro.std_hours + ro.setup_hours*ceil(qi.qty/ro.batch_size)/qi.qty)*r.qty END,
         CASE WHEN ro.is_subcontracted THEN ro.subcon_basis ELSE 'h' END,
         p(coalesce(ro.subcon_price_key, w.rate_param_key)),
         coalesce(ro.subcon_price_key, w.rate_param_key),
-        round(CASE WHEN ro.is_subcontracted THEN ro.subcon_basis_per_unit*r.qty ELSE (ro.std_hours + ro.setup_hours/qi.qty)*r.qty END
+        round(CASE WHEN ro.is_subcontracted THEN ro.subcon_basis_per_unit*r.qty ELSE (ro.std_hours + ro.setup_hours*ceil(qi.qty/ro.batch_size)/qi.qty)*r.qty END
               * p(coalesce(ro.subcon_price_key, w.rate_param_key)),4)
       FROM routing rt JOIN routing_operation ro ON ro.routing_id=rt.id LEFT JOIN workstation w ON w.id=ro.workstation_id
       WHERE rt.item_id=r.item_id;

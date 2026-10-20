@@ -4,6 +4,11 @@ CREATE OR REPLACE FUNCTION fn_on_hand(p_item bigint, p_plant bigint) RETURNS num
 SELECT coalesce(sum(b.qty),0) FROM v_stock_balance b JOIN warehouse w ON w.id=b.warehouse_id
 WHERE b.item_id=p_item AND w.plant_id=p_plant AND w.wh_type IN ('raw','fg') AND b.tenant_id=app_tid() $$;
 
+-- 现存量（允许替代料时，替代料库存按换算率折算为主料）
+CREATE OR REPLACE FUNCTION fn_on_hand_alt(p_item bigint, p_plant bigint, p_allow boolean) RETURNS numeric LANGUAGE sql STABLE AS $$
+SELECT fn_on_hand(p_item, p_plant) + CASE WHEN p_allow THEN coalesce((
+  SELECT sum(fn_on_hand(a.alt_item_id, p_plant)/a.conversion_ratio) FROM item_alternative a WHERE a.item_id=p_item AND a.tenant_id=app_tid()),0) ELSE 0 END $$;
+
 CREATE OR REPLACE FUNCTION fn_create_wo(p_item bigint, p_qty numeric, p_plant bigint, p_so_item bigint,
   p_parent bigint, p_plan bigint, p_fg_wh bigint) RETURNS bigint LANGUAGE plpgsql AS $$
 DECLARE wo bigint;
@@ -11,8 +16,12 @@ BEGIN
   INSERT INTO work_order(plant_id, item_id, drawing_id, bom_id, sales_order_item_id, production_plan_id, parent_work_order_id, qty, fg_warehouse_id)
   SELECT p_plant, p_item, i.current_drawing_id, (SELECT id FROM bom WHERE item_id=p_item AND is_default AND status='active'),
          p_so_item, p_plan, p_parent, p_qty, p_fg_wh FROM item i WHERE i.id=p_item RETURNING id INTO wo;
-  INSERT INTO wo_operation(work_order_id, routing_op_id, seq, op_name, workstation_id, std_hours, is_subcontracted, piece_rate)
-  SELECT wo, ro.id, ro.seq, ro.op_name, ro.workstation_id, ro.std_hours, ro.is_subcontracted, ro.piece_rate
+  UPDATE work_order SET
+    wip_warehouse_id = (SELECT id FROM warehouse WHERE plant_id=p_plant AND wh_type='wip' ORDER BY id LIMIT 1),
+    scrap_warehouse_id = (SELECT id FROM warehouse WHERE plant_id=p_plant AND wh_type='reject' ORDER BY id LIMIT 1)
+  WHERE id=wo;
+  INSERT INTO wo_operation(work_order_id, routing_op_id, seq, op_name, workstation_id, std_hours, is_subcontracted, piece_rate, batch_size)
+  SELECT wo, ro.id, ro.seq, ro.op_name, ro.workstation_id, ro.std_hours, ro.is_subcontracted, ro.piece_rate, ro.batch_size
   FROM routing r JOIN routing_operation ro ON ro.routing_id=r.id WHERE r.item_id=p_item ORDER BY ro.seq;
   RETURN wo;
 END $$;
@@ -35,17 +44,21 @@ BEGIN
   SELECT * INTO so FROM sales_order WHERE id=p_so;
   INSERT INTO production_plan(sales_order_id, plant_id) VALUES (p_so, so.plant_id) RETURNING id INTO plan;
   INSERT INTO mrp_line(production_plan_id, item_id, bom_level, parent_item_id, gross_qty, on_hand_qty, net_qty, action)
-  WITH RECURSIVE ex(item_id, parent_id, qty, lvl, so_item) AS (
-    SELECT s.item_id, NULL::bigint, s.qty - s.delivered_qty, 0, s.id FROM sales_order_item s WHERE s.sales_order_id=p_so
+  WITH RECURSIVE ex(item_id, parent_id, qty, lvl, so_item, allow_alt) AS (
+    SELECT s.item_id, NULL::bigint, s.qty - s.delivered_qty, 0, s.id, false FROM sales_order_item s WHERE s.sales_order_id=p_so
     UNION ALL
-    SELECT bi.component_id, ex.item_id, ex.qty*bi.qty_per*(1+bi.attrition_rate)/b.quantity, ex.lvl+1, ex.so_item
+    SELECT bi.component_id, ex.item_id, ex.qty*bi.qty_per*(1+bi.attrition_rate)/b.quantity, ex.lvl+1, ex.so_item, bi.allow_alternative
     FROM ex JOIN bom b ON b.item_id=ex.item_id AND b.is_default AND b.status='active' JOIN bom_item bi ON bi.bom_id=b.id)
   SELECT plan, ex.item_id, min(ex.lvl), ex.parent_id, sum(ex.qty),
-         fn_on_hand(ex.item_id, so.plant_id),
-         greatest(sum(ex.qty) - fn_on_hand(ex.item_id, so.plant_id), 0),
-         CASE WHEN greatest(sum(ex.qty) - fn_on_hand(ex.item_id, so.plant_id),0)=0 THEN 'none'
+         fn_on_hand_alt(ex.item_id, so.plant_id, bool_or(ex.allow_alt)),
+         greatest(sum(ex.qty) + i.safety_stock - fn_on_hand_alt(ex.item_id, so.plant_id, bool_or(ex.allow_alt)), 0),
+         CASE WHEN greatest(sum(ex.qty) + i.safety_stock - fn_on_hand_alt(ex.item_id, so.plant_id, bool_or(ex.allow_alt)),0)=0 THEN 'none'
               WHEN i.item_kind IN ('raw','purchased') THEN 'buy' ELSE 'make' END
-  FROM ex JOIN item i ON i.id=ex.item_id GROUP BY ex.item_id, ex.parent_id, i.item_kind;
+  FROM ex JOIN item i ON i.id=ex.item_id GROUP BY ex.item_id, ex.parent_id, i.item_kind, i.safety_stock;
+  -- 外购：建议订购量按最小订购量取整
+  UPDATE mrp_line m SET safety_stock=i.safety_stock,
+         order_qty = CASE WHEN m.action='buy' THEN greatest(m.net_qty, i.min_order_qty) ELSE m.net_qty END
+  FROM item i WHERE i.id=m.item_id AND m.production_plan_id=plan;
   -- 自制：按层级生成工单，子工单挂父工单
   FOR r IN SELECT m.*, (SELECT s.id FROM sales_order_item s WHERE s.sales_order_id=p_so AND s.item_id=m.item_id LIMIT 1) so_item
            FROM mrp_line m WHERE m.production_plan_id=plan AND m.action='make' ORDER BY m.bom_level LOOP
@@ -185,7 +198,7 @@ CREATE OR REPLACE FUNCTION fn_wo_receive(p_wo bigint, p_qty numeric) RETURNS num
 DECLARE w work_order; accepted numeric; total_cost numeric; received_value numeric; val numeric; sl stock_ledger; remaining numeric;
 BEGIN
   SELECT * INTO w FROM work_order WHERE id=p_wo FOR UPDATE;
-  SELECT coalesce(sum(accepted_qty),0) INTO accepted FROM quality_inspection WHERE inspection_type='final' AND ref_type='work_order' AND ref_id=p_wo AND status='completed';
+  SELECT coalesce(sum(accepted_qty),0) INTO accepted FROM quality_inspection WHERE inspection_type='final' AND ref_type='work_order' AND ref_id=p_wo AND status IN ('completed','reviewed');
   IF w.produced_qty + p_qty > accepted THEN RAISE EXCEPTION '入库数 % 超过成品检合格数 %', w.produced_qty + p_qty, accepted; END IF;
   SELECT coalesce(sum(amount),0) INTO total_cost FROM wo_cost_entry WHERE work_order_id=p_wo;
   SELECT coalesce(sum(value_change),0) INTO received_value FROM stock_ledger WHERE voucher_type='wo_receipt' AND voucher_id=p_wo;

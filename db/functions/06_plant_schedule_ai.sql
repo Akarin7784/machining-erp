@@ -30,7 +30,7 @@ DECLARE o record; need numeric; d date; cap numeric; used numeric; take numeric;
         wo_prev bigint := NULL;
 BEGIN
   DELETE FROM schedule_slot s USING wo_operation xo, work_order xw WHERE s.wo_operation_id=xo.id AND xo.work_order_id=xw.id AND xw.plant_id=p_plant;
-  FOR o IN SELECT op.*, w.qty AS wo_qty, w.parent_work_order_id, ws.hours_per_day,
+  FOR o IN SELECT op.*, w.qty AS wo_qty, w.parent_work_order_id, ws.hours_per_day*ws.production_capacity AS hours_per_day,
                   coalesce(ro.setup_hours,0) AS setup_hours
            FROM wo_operation op JOIN work_order w ON w.id=op.work_order_id
            LEFT JOIN workstation ws ON ws.id=op.workstation_id LEFT JOIN routing_operation ro ON ro.id=op.routing_op_id
@@ -45,7 +45,7 @@ BEGIN
       UPDATE wo_operation SET sched_start=prev_end, sched_end=prev_end + p('ex_subcon_lead_days')::int WHERE id=o.id;
       prev_end := prev_end + p('ex_subcon_lead_days')::int;
     ELSE
-      need := greatest(o.std_hours*(o.wo_qty - o.completed_qty) + o.setup_hours, 0.01);
+      need := greatest(fn_op_hours(o.std_hours, o.setup_hours, o.batch_size, o.wo_qty - o.completed_qty), 0.01);
       d := prev_end; first_day := NULL;
       WHILE need > 0 LOOP
         IF extract(isodow FROM d) < 7 THEN   -- 周日休息
