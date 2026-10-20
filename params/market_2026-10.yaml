@@ -1,0 +1,25 @@
+# params/market_2026-10.yaml  查询日期 2026-10-20 (来自企业项目调研员)
+materials:   # 元/kg
+  - {code: "45#", price: 3.59, note: "福州三钢/杭钢 3590元/吨 2026-10-10", source: "https://www.mysteel.com/hot/59930.html"}
+  - {code: "SUS304_D21-45", price: 13.45, note: "青山 无锡 2026-10-20", source: "http://hq.steelcn.cn/20261020/5061418.html"}
+  - {code: "SUS304_D65-130", price: 13.20, source: "http://hq.steelcn.cn/20261020/5061418.html"}
+  - {code: "AL6061_D90", price: 24.00, note: "无锡 2026-10-20", source: "https://www.smm.cn/mpdb/1705462054881_live"}
+machine_rates:   # 元/小时
+  - {type: "普通车床", rate: 60, source: "https://www.cnclead.com/category/view/1436.html"}
+  - {type: "数控车床", min: 60, max: 120, default: 100, source: "https://www.cnclead.com/category/view/1436.html"}
+  - {type: "加工中心", min: 60, max: 120, source: "https://www.cnclead.com/category/view/1436.html"}
+  - {type: "钳工", rate: 80, source: "https://www.cnclead.com/category/view/1436.html"}
+  - {type: "五轴加工中心", rate: 400, note: "中山大学校外价", source: "https://saa.sysu.edu.cn/article/736"}
+overhead_factor: {value: 1.2, source: "https://www.cnclead.com/category/view/1436.html"}
+subcontract:
+  - {process: "调质_电炉", price: 2.30, unit: "元/kg", note: "江苏协作价，年份不明，作参考区间", source: "https://www.renrendoc.com/paper/167875780.html"}
+  - {process: "调质_盐炉", price: 2.60, unit: "元/kg", source: "https://www.renrendoc.com/paper/167875780.html"}
+  - {process: "发黑", price: 1.20, unit: "元/kg", note: "江苏 单件>0.1kg；天津也是1.2", source: "https://www.renrendoc.com/paper/167875780.html"}
+  - {process: "镀铬_铜镍铬", price: 1.65, unit: "元/dm²", note: "10-20微米", source: "https://www.jbcsxfh.com/show/73.html"}
+labor:
+  - {role: "数控车工", monthly_min: 7000, monthly_max: 10000, mode: "计件", source: "https://www.nanan.love/job/30534"}
+  - {role: "数控车工C6130", monthly_min: 5800, monthly_max: 8800, mode: "计件", source: "https://bbs.211600.com/thread-2396166-1-1.html"}
+business_rules:
+  - {key: "min_margin", value: 0.25, example: true}
+  - {key: "subcontract_loss_allowance", value: 0.01, example: true}
+  - {key: "piece_rate_per_op", example: true, note: "公开招聘只给月薪区间，查不到每道工序的计件单价"}
