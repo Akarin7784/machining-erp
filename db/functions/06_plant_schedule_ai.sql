@@ -105,27 +105,12 @@ BEGIN
 END $$;
 
 -- 完工复盘：比较报价工时与实际工时，按权重给出新定额（需人工确认后生效）
-CREATE OR REPLACE FUNCTION fn_cost_review(p_wo bigint) RETURNS int LANGUAGE plpgsql AS $$
-DECLARE rid bigint; n int; a numeric := p('ex_std_hours_learning_rate');
-BEGIN
-  INSERT INTO ai_request(kind, input, model) VALUES ('cost_review', jsonb_build_object('work_order_id',p_wo), 'rule:ewma') RETURNING id INTO rid;
-  INSERT INTO ai_cost_review(ai_request_id, work_order_id, routing_op_id, quoted_hours, actual_hours_per_unit, proposed_hours)
-  SELECT rid, p_wo, o.routing_op_id, ro.std_hours,
-         round(sum(j.hours)/nullif(sum(j.good_qty),0),4),
-         round(a*sum(j.hours)/nullif(sum(j.good_qty),0) + (1-a)*ro.std_hours, 4)
-  FROM wo_operation o JOIN routing_operation ro ON ro.id=o.routing_op_id JOIN job_card j ON j.wo_operation_id=o.id AND NOT j.is_rework
-  WHERE o.work_order_id=p_wo AND NOT o.is_subcontracted AND ro.std_hours > 0
-  GROUP BY o.routing_op_id, ro.std_hours HAVING sum(j.good_qty) > 0;
-  GET DIAGNOSTICS n = ROW_COUNT;
-  UPDATE ai_request SET status='succeeded', output=(SELECT jsonb_agg(to_jsonb(c)) FROM ai_cost_review c WHERE c.ai_request_id=rid) WHERE id=rid;
-  RETURN n;
-END $$;
-
 CREATE OR REPLACE FUNCTION fn_apply_cost_review(p_review bigint) RETURNS void LANGUAGE plpgsql AS $$
 DECLARE c ai_cost_review;
 BEGIN
   SELECT * INTO c FROM ai_cost_review WHERE id=p_review FOR UPDATE;
   IF c.applied THEN RAISE EXCEPTION '已应用'; END IF;
+  IF c.line_type <> 'hours' THEN RAISE EXCEPTION '工时定额只能按工时行差异修正'; END IF;
   UPDATE routing_operation SET std_hours=c.proposed_hours WHERE id=c.routing_op_id;
   UPDATE ai_cost_review SET applied=true, applied_by=app_user(), applied_at=now() WHERE id=p_review;
 END $$;

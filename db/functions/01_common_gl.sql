@@ -1,3 +1,9 @@
+
+-- 不含税成本价：参数 tax_included=true 时 ÷(1+增值税一般税率)，否则原值（厂内费率、示例工时等）
+CREATE OR REPLACE FUNCTION p_net(p_key text) RETURNS numeric LANGUAGE sql STABLE AS $$
+  SELECT CASE WHEN r.tax_included THEN round(r.value/(1+p('vat_rate_general')),6) ELSE r.value END
+  FROM ref_param r WHERE r.param_key=p_key
+$$;
 -- 通用：科目表初始化、凭证过账、物料单价
 CREATE OR REPLACE FUNCTION fn_seed_coa() RETURNS void LANGUAGE sql AS $$
 INSERT INTO gl_account(account_code, account_name, account_type) VALUES

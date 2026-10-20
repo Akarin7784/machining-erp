@@ -190,13 +190,4 @@ BEGIN
   END LOOP;
 END $$;
 
--- 成本口径：订单实际成本按与报价相同口径（含管理费系数）比较
-CREATE OR REPLACE VIEW v_order_cost_compare WITH (security_invoker = true) AS
-SELECT v.*, qi.overhead_factor,
-       round(v.unit_actual * qi.overhead_factor, 4) AS unit_actual_with_overhead,
-       round(v.unit_actual * qi.overhead_factor - v.unit_quoted_cost, 4) AS cost_variance,
-       round(1 - v.unit_actual * qi.overhead_factor / nullif(v.unit_price,0), 4) AS actual_margin_same_basis
-FROM v_order_cost_actual v
-LEFT JOIN sales_order_item soi ON soi.id=v.sales_order_item_id
-LEFT JOIN quotation_item qi ON qi.id=soi.quotation_item_id;
 -- migrate:down

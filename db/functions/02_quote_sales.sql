@@ -40,28 +40,32 @@ BEGIN
       JOIN bom_item bi ON bi.bom_id=b.id)
     SELECT ex.*, i.item_kind, i.material_param_key, i.std_cost FROM ex JOIN item i ON i.id=ex.item_id
   LOOP
-    IF r.item_kind='raw' THEN
-      rate := p(r.material_param_key);
-      INSERT INTO quotation_cost_line(quotation_item_id,cost_type,ref_item_id,basis_qty,basis_uom,unit_rate,param_key,amount)
-      VALUES (p_qi,'material',r.item_id,r.qty,'kg',rate,r.material_param_key,round(r.qty*rate,4));
-    ELSIF r.item_kind='purchased' THEN
-      INSERT INTO quotation_cost_line(quotation_item_id,cost_type,ref_item_id,basis_qty,basis_uom,unit_rate,amount)
-      VALUES (p_qi,'purchased',r.item_id,r.qty,'pcs',r.std_cost,round(r.qty*r.std_cost,4));
+    IF r.item_kind='raw' THEN   -- 材料：行情含税价 → 不含税
+      INSERT INTO quotation_cost_line(quotation_item_id,cost_type,ref_item_id,basis_qty,basis_uom,unit_rate,param_key,amount,tax_included,unit_rate_gross,amount_gross)
+      SELECT p_qi,'material',r.item_id,r.qty,'kg',p_net(r.material_param_key),r.material_param_key,round(r.qty*p_net(r.material_param_key),4),
+             rp.tax_included, p(r.material_param_key), round(r.qty*p(r.material_param_key),4)
+      FROM ref_param rp WHERE rp.param_key=r.material_param_key;
+    ELSIF r.item_kind='purchased' THEN   -- 外购件：std_cost 为不含税
+      INSERT INTO quotation_cost_line(quotation_item_id,cost_type,ref_item_id,basis_qty,basis_uom,unit_rate,amount,tax_included,unit_rate_gross,amount_gross)
+      VALUES (p_qi,'purchased',r.item_id,r.qty,'pcs',r.std_cost,round(r.qty*r.std_cost,4),true,
+              round(r.std_cost*(1+p('vat_rate_general')),4), round(r.qty*r.std_cost*(1+p('vat_rate_general')),4));
     ELSE
-      INSERT INTO quotation_cost_line(quotation_item_id,cost_type,ref_item_id,routing_op_id,basis_qty,basis_uom,unit_rate,param_key,amount)
-      SELECT p_qi,
-        CASE WHEN NOT ro.is_subcontracted THEN 'machining' WHEN ro.subcon_price_key LIKE 'ht\_%' THEN 'heat_treat' ELSE 'surface' END,
-        r.item_id, ro.id,
-        CASE WHEN ro.is_subcontracted THEN ro.subcon_basis_per_unit*r.qty ELSE (ro.std_hours + ro.setup_hours*ceil(qi.qty/ro.batch_size)/qi.qty)*r.qty END,
-        CASE WHEN ro.is_subcontracted THEN ro.subcon_basis ELSE 'h' END,
-        p(coalesce(ro.subcon_price_key, w.rate_param_key)),
-        coalesce(ro.subcon_price_key, w.rate_param_key),
-        round(CASE WHEN ro.is_subcontracted THEN ro.subcon_basis_per_unit*r.qty ELSE (ro.std_hours + ro.setup_hours*ceil(qi.qty/ro.batch_size)/qi.qty)*r.qty END
-              * p(coalesce(ro.subcon_price_key, w.rate_param_key)),4)
-      FROM routing rt JOIN routing_operation ro ON ro.routing_id=rt.id LEFT JOIN workstation w ON w.id=ro.workstation_id
-      WHERE rt.item_id=r.item_id;
+      INSERT INTO quotation_cost_line(quotation_item_id,cost_type,ref_item_id,routing_op_id,basis_qty,basis_uom,unit_rate,param_key,amount,tax_included,unit_rate_gross,amount_gross)
+      SELECT p_qi, x.ctype, r.item_id, x.id, x.bq, x.bu, p_net(x.k), x.k, round(x.bq*p_net(x.k),4), rp.tax_included, p(x.k), round(x.bq*p(x.k),4)
+      FROM (SELECT ro.id, coalesce(ro.subcon_price_key, w.rate_param_key) k,
+              CASE WHEN NOT ro.is_subcontracted THEN 'machining' WHEN ro.subcon_price_key LIKE 'ht\_%' THEN 'heat_treat' ELSE 'surface' END ctype,
+              CASE WHEN ro.is_subcontracted THEN ro.subcon_basis_per_unit*r.qty ELSE (ro.std_hours + ro.setup_hours*ceil(qi.qty/ro.batch_size)/qi.qty)*r.qty END bq,
+              CASE WHEN ro.is_subcontracted THEN ro.subcon_basis ELSE 'h' END bu
+            FROM routing rt JOIN routing_operation ro ON ro.routing_id=rt.id LEFT JOIN workstation w ON w.id=ro.workstation_id
+            WHERE rt.item_id=r.item_id) x
+      JOIN ref_param rp ON rp.param_key=x.k;
     END IF;
   END LOOP;
+  -- 管理费单独一行：直接成本合计 ×(系数-1)，复盘时与月末制造费用分摊对比
+  INSERT INTO quotation_cost_line(quotation_item_id,cost_type,basis_qty,basis_uom,unit_rate,param_key,amount,tax_included,unit_rate_gross,amount_gross)
+  SELECT p_qi,'overhead',sum(amount),'元',p('quote_overhead_factor')-1,'quote_overhead_factor',round(sum(amount)*(p('quote_overhead_factor')-1),4),false,
+         p('quote_overhead_factor')-1, round(sum(amount)*(p('quote_overhead_factor')-1),4)
+  FROM quotation_cost_line WHERE quotation_item_id=p_qi;
   UPDATE quotation_item SET
     material_cost   = coalesce((SELECT sum(amount) FROM quotation_cost_line WHERE quotation_item_id=p_qi AND cost_type='material'),0),
     machining_cost  = coalesce((SELECT sum(amount) FROM quotation_cost_line WHERE quotation_item_id=p_qi AND cost_type='machining'),0),

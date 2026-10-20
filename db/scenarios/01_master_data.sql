@@ -28,7 +28,7 @@ INSERT INTO workstation(plant_id, ws_code, ws_name, rate_param_key) VALUES
 
 INSERT INTO item(item_code, item_name, item_kind, stock_uom, material_param_key, density_param_key, std_cost, is_batch_tracked) VALUES
  ('RAW-45-D40','45号钢圆钢 Φ40','raw','kg','mat_45_kg','density_45_steel',NULL,true),
- ('BRG-6205','深沟球轴承 6205','purchased','pcs',NULL,NULL,p('ex_bearing_6205_price'),false),
+ ('BRG-6205','深沟球轴承 6205','purchased','pcs',NULL,NULL,p_net('ex_bearing_6205_price'),false),
  ('SHAFT-SEMI','精密轴(镀铬) Φ38h6','semi','pcs',NULL,NULL,NULL,false),
  ('SHAFT-ASSY','精密轴组件(含2只轴承)','finished','pcs',NULL,NULL,NULL,false);
 INSERT INTO param_template(name, unit) VALUES ('直径','mm'), ('长度','mm'), ('材质',NULL), ('表面处理',NULL), ('热处理',NULL);

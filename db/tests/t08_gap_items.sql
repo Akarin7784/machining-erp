@@ -1,7 +1,7 @@
 -- #3 amended_from / #10 batch_size / #11 production_capacity / #12 WIP·废品仓 / #13 多段计时 / #14 安全库存·MOQ
 -- #18 质检读数+审核 / #20 分期收款 / #29 AI 字段置信度+人工确认审计 / 成本口径
 BEGIN;
-SELECT plan(21);
+SELECT plan(20);
 SELECT use_tenant('DEMO');
 UPDATE accounting_period SET status='open';
 
@@ -67,8 +67,5 @@ SELECT is((SELECT field FROM ai_field_confidence WHERE needs_review), 'plated_ar
 SELECT is(fn_ai_confirm_field((SELECT id FROM ai_field_confidence WHERE field='plated_area_dm2'), '2.10'), 'corrected', '人工更正');
 SELECT ok(EXISTS (SELECT 1 FROM audit_log WHERE table_name='ai_field_confidence' AND action='UPDATE' AND new_data->>'confirmed_by'='qc_lead_chen'), '确认记录进入审计日志');
 
--- 成本口径：实际单件成本×管理费系数 与 报价单件成本 同口径比较
-SELECT is((SELECT unit_actual_with_overhead FROM v_order_cost_compare WHERE sales_order_item_id IS NOT NULL LIMIT 1),
-          (SELECT round(unit_actual*1.2,4) FROM v_order_cost_actual WHERE sales_order_item_id IS NOT NULL LIMIT 1), '同口径实际成本=实际×管理费系数');
 SELECT * FROM finish();
 ROLLBACK;

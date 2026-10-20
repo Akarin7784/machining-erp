@@ -1,29 +1,29 @@
-param_key,name_cn,value,unit,range_low,range_high,source_url,source_title,fetched_date,note
-mat_price_45_round_sh_50,45#碳结圆钢Φ50 上海,3540,元/吨,3370,3830,https://www.steelhome.com/xhbj.php,钢之家 今日钢材现货报价（优特钢）,2026-10-20,含税现货；区间为22个城市最低/最高；全国均价3541
-mat_price_45_round_avg_50,45#碳结圆钢Φ50 全国均价,3541,元/吨,,,https://www.steelhome.com/xhbj.php,钢之家 今日钢材现货报价（优特钢）,2026-10-20,
-mat_price_45_round_sh_80,45#碳结圆钢80mm 上海,3590,元/吨,3390,3770,http://baojia.steelcn.cn/default.aspx?date=2026-10-20,中钢网 2026年10月20日今日钢材价格,2026-10-20,区间为13城市
-mat_price_45_round_huaigang,淮钢40#-45#优碳圆钢Φ29-85 淮安,3590,元/吨,,,https://steel.smm.cn/content/114/104167936,上海有色网 10月20日优特棒材碳结钢价格行情,2026-10-20,含税出厂
-mat_price_45_round_sh_160,淮钢45#碳结圆钢Φ160-180 上海,3880,元/吨,,,https://goodsfu.10jqka.com.cn/20261020/c680878473.shtml,同花顺 上海淮钢45#碳结圆钢现货报价,2026-10-20,大规格
-mat_price_304_bar_qingshan,青山TP304不锈钢棒Φ65-130 无锡,13300,元/吨,12900,13450,https://list1.mysteel.com/zhishi/jrzxwxTP304bxgjg.html,我的钢铁网 无锡TP304不锈钢价格,2026-10-20,报价日2026-10-16；区间取青山S30400 10/19各规格（https://bxg.mysteel.com/a/26101909/C4FDD2276BCBFE62.html）
-mat_price_304_bar_yongxing,永兴304不锈钢棒Φ65-130,16500,元/吨,,,https://bxg.mysteel.com/a/26101610/F991A628C584F2F7.html,我的钢铁网 2026年10月16日永兴不锈钢棒材销售价格,2026-10-20,现款含税自提过磅；高端品牌
-mat_price_6061_bar_baotai,6061铝棒(Fe<0.35) 保太报价,23800,元/吨,23700,23800,https://jxbt01.baotaigroup.com.cn/en/offer/index/catid/165.html,江西保太 铝棒价格,2026-10-20,低值为Fe0.35-0.5规格
-mat_price_al_bar_phi90_wx,铝棒Φ90 无锡市场,24000,元/吨,23810,24000,https://www.smm.cn/mpdb/1705462054881_live,上海有色网 6061铝棒快讯,2026-10-20,区间为佛山/南昌/无锡Φ90；SMM未明示合金牌号可能含6063
-ht_quench_temper_per_kg,外协调质/淬火,2.5,元/kg,2,3,http://www.worldsteel.net.cn/news/414513.html,全球钢材百科网 渗碳热处理价格,2026-10-20,网文经验价；真空炉翻倍；value取中值
-ht_carburize_per_kg,外协渗碳,20,元/kg,,,http://www.worldsteel.net.cn/news/414513.html,全球钢材百科网 渗碳热处理价格,2026-10-20,网文经验价
-plating_chrome_per_kg,外协镀铬,5.5,元/kg,4,7,https://www.czpygy.com/duxin_667614,钢管材料网 钢铁零件镀锌镀铬怎么收费,2026-10-20,网文经验价；value取中值
-plating_hard_chrome_per_dm2,外协镀硬铬,4,元/dm2,3,5,https://www.czpygy.com/duxin_667614,钢管材料网 钢铁零件镀锌镀铬怎么收费,2026-10-20,按表面积计
-plating_zinc_white_per_kg,外协镀白锌,3.5,元/kg,2,5,https://www.czpygy.com/duxin_667614,钢管材料网 钢铁零件镀锌镀铬怎么收费,2026-10-20,网文经验价；彩锌3-6元/kg
-plating_hot_dip_zinc_per_t,外协热镀锌,1350,元/吨,1200,1500,https://www.czpygy.com/duxin_667614,钢管材料网 热镀锌费怎么算,2026-10-20,铁附件
-blackening_per_kg,外协发黑,1.5,元/kg,1,2.5,https://www.czpygy.com/duxin_667614,钢管材料网 钢铁零件镀锌镀铬怎么收费,2026-10-20,上限2.5取自机械社区深圳报价(2009) http://www.cmiw.cn/thread-138337-1-1.html
-rate_lathe_conventional,普通车床机时费,60,元/小时,11,111,https://www.cnclead.com/category/view/1436.html,前沿数控 机加工工艺与报价,2026-10-20,低值为国际金属加工网旧价目(C616)；高值为中山大学校内收费(仅使用费)
-rate_cnc_lathe,数控车床机时费,90,元/小时,60,120,https://www.cnclead.com/category/view/1436.html,前沿数控 机加工工艺与报价,2026-10-20,中山大学数控车床校内60/校外120 https://saa.sysu.edu.cn/article/736
-rate_machining_center,加工中心机时费,90,元/小时,60,150,https://www.cnclead.com/category/view/1436.html,前沿数控 机加工工艺与报价,2026-10-20,高值为中山大学校内收费150(校外300)
-rate_fitter,钳工工时费,80,元/小时,,,https://www.cnclead.com/category/view/1436.html,前沿数控 机加工工艺与报价,2026-10-20,
-quote_overhead_factor,报价管理费系数,1.2,倍,,,https://www.cnclead.com/category/view/1436.html,前沿数控 机加工工艺与报价,2026-10-20,加工件成本=(材料费+加工费)*1.2
-wage_cnc_operator_national,CNC操作工月薪(全国),8000,元/月,6000,10000,https://www.jobui.com/salary/quanguo-cnccaozuogong/,职友集 cnc操作工工资待遇,2026-10-20,71.5%岗位6-10K；value取中值；2525份样本截至2026-10-20；中专均值7.9K
-wage_cnc_operator_shanghai,CNC操作工月薪(上海),10300,元/月,,,https://www.jobui.com/salary/quanguo-cnccaozuogong/,职友集 cnc操作工工资待遇,2026-10-20,城市均值
-wage_cnc_operator_tianjin,CNC操机师傅月薪(天津),11500,元/月,8000,15000,https://www.jobui.com/salary/tianjin-cnccaojishifu/,职友集 天津cnc操机师傅工资,2026-10-20,87.5%岗位8-15K；value取中值
-wage_cnc_lathe_national,数控车工月薪(全国),8000,元/月,6000,10000,https://www.jobui.com/salary/quanguo-shukongchegong/,职友集 数控车工工资,2026-10-20,73.3%岗位6-10K；样本截至2026-05-24
-density_45_steel,45号钢密度,7.85,g/cm3,,,https://bestaicam.com/tools/metal-weight-calculator,BestAI CAM 金属重量计算器,2026-10-20,工程常用值
-density_304_ss,304不锈钢密度,7.93,g/cm3,,,https://bestaicam.com/tools/metal-weight-calculator,BestAI CAM 金属重量计算器,2026-10-20,工程常用值
-density_6061_al,6061铝合金密度,2.70,g/cm3,,,https://bestaicam.com/tools/metal-weight-calculator,BestAI CAM 金属重量计算器,2026-10-20,工程常用值
+param_key,name_cn,value,unit,range_low,range_high,source_url,source_title,fetched_date,note,tax_included
+mat_price_45_round_sh_50,45#碳结圆钢Φ50 上海,3540,元/吨,3370,3830,https://www.steelhome.com/xhbj.php,钢之家 今日钢材现货报价（优特钢）,2026-10-20,含税现货；区间为22个城市最低/最高；全国均价3541,true
+mat_price_45_round_avg_50,45#碳结圆钢Φ50 全国均价,3541,元/吨,,,https://www.steelhome.com/xhbj.php,钢之家 今日钢材现货报价（优特钢）,2026-10-20,,true
+mat_price_45_round_sh_80,45#碳结圆钢80mm 上海,3590,元/吨,3390,3770,http://baojia.steelcn.cn/default.aspx?date=2026-10-20,中钢网 2026年10月20日今日钢材价格,2026-10-20,区间为13城市,true
+mat_price_45_round_huaigang,淮钢40#-45#优碳圆钢Φ29-85 淮安,3590,元/吨,,,https://steel.smm.cn/content/114/104167936,上海有色网 10月20日优特棒材碳结钢价格行情,2026-10-20,含税出厂,true
+mat_price_45_round_sh_160,淮钢45#碳结圆钢Φ160-180 上海,3880,元/吨,,,https://goodsfu.10jqka.com.cn/20261020/c680878473.shtml,同花顺 上海淮钢45#碳结圆钢现货报价,2026-10-20,大规格,true
+mat_price_304_bar_qingshan,青山TP304不锈钢棒Φ65-130 无锡,13300,元/吨,12900,13450,https://list1.mysteel.com/zhishi/jrzxwxTP304bxgjg.html,我的钢铁网 无锡TP304不锈钢价格,2026-10-20,报价日2026-10-16；区间取青山S30400 10/19各规格（https://bxg.mysteel.com/a/26101909/C4FDD2276BCBFE62.html）,true
+mat_price_304_bar_yongxing,永兴304不锈钢棒Φ65-130,16500,元/吨,,,https://bxg.mysteel.com/a/26101610/F991A628C584F2F7.html,我的钢铁网 2026年10月16日永兴不锈钢棒材销售价格,2026-10-20,现款含税自提过磅；高端品牌,true
+mat_price_6061_bar_baotai,6061铝棒(Fe<0.35) 保太报价,23800,元/吨,23700,23800,https://jxbt01.baotaigroup.com.cn/en/offer/index/catid/165.html,江西保太 铝棒价格,2026-10-20,低值为Fe0.35-0.5规格,true
+mat_price_al_bar_phi90_wx,铝棒Φ90 无锡市场,24000,元/吨,23810,24000,https://www.smm.cn/mpdb/1705462054881_live,上海有色网 6061铝棒快讯,2026-10-20,区间为佛山/南昌/无锡Φ90；SMM未明示合金牌号可能含6063,true
+ht_quench_temper_per_kg,外协调质/淬火,2.5,元/kg,2,3,http://www.worldsteel.net.cn/news/414513.html,全球钢材百科网 渗碳热处理价格,2026-10-20,网文经验价；真空炉翻倍；value取中值,true
+ht_carburize_per_kg,外协渗碳,20,元/kg,,,http://www.worldsteel.net.cn/news/414513.html,全球钢材百科网 渗碳热处理价格,2026-10-20,网文经验价,true
+plating_chrome_per_kg,外协镀铬,5.5,元/kg,4,7,https://www.czpygy.com/duxin_667614,钢管材料网 钢铁零件镀锌镀铬怎么收费,2026-10-20,网文经验价；value取中值,true
+plating_hard_chrome_per_dm2,外协镀硬铬,4,元/dm2,3,5,https://www.czpygy.com/duxin_667614,钢管材料网 钢铁零件镀锌镀铬怎么收费,2026-10-20,按表面积计,true
+plating_zinc_white_per_kg,外协镀白锌,3.5,元/kg,2,5,https://www.czpygy.com/duxin_667614,钢管材料网 钢铁零件镀锌镀铬怎么收费,2026-10-20,网文经验价；彩锌3-6元/kg,true
+plating_hot_dip_zinc_per_t,外协热镀锌,1350,元/吨,1200,1500,https://www.czpygy.com/duxin_667614,钢管材料网 热镀锌费怎么算,2026-10-20,铁附件,true
+blackening_per_kg,外协发黑,1.5,元/kg,1,2.5,https://www.czpygy.com/duxin_667614,钢管材料网 钢铁零件镀锌镀铬怎么收费,2026-10-20,上限2.5取自机械社区深圳报价(2009) http://www.cmiw.cn/thread-138337-1-1.html,true
+rate_lathe_conventional,普通车床机时费,60,元/小时,11,111,https://www.cnclead.com/category/view/1436.html,前沿数控 机加工工艺与报价,2026-10-20,低值为国际金属加工网旧价目(C616)；高值为中山大学校内收费(仅使用费),false
+rate_cnc_lathe,数控车床机时费,90,元/小时,60,120,https://www.cnclead.com/category/view/1436.html,前沿数控 机加工工艺与报价,2026-10-20,中山大学数控车床校内60/校外120 https://saa.sysu.edu.cn/article/736,false
+rate_machining_center,加工中心机时费,90,元/小时,60,150,https://www.cnclead.com/category/view/1436.html,前沿数控 机加工工艺与报价,2026-10-20,高值为中山大学校内收费150(校外300),false
+rate_fitter,钳工工时费,80,元/小时,,,https://www.cnclead.com/category/view/1436.html,前沿数控 机加工工艺与报价,2026-10-20,,false
+quote_overhead_factor,报价管理费系数,1.2,倍,,,https://www.cnclead.com/category/view/1436.html,前沿数控 机加工工艺与报价,2026-10-20,加工件成本=(材料费+加工费)*1.2,false
+wage_cnc_operator_national,CNC操作工月薪(全国),8000,元/月,6000,10000,https://www.jobui.com/salary/quanguo-cnccaozuogong/,职友集 cnc操作工工资待遇,2026-10-20,71.5%岗位6-10K；value取中值；2525份样本截至2026-10-20；中专均值7.9K,false
+wage_cnc_operator_shanghai,CNC操作工月薪(上海),10300,元/月,,,https://www.jobui.com/salary/quanguo-cnccaozuogong/,职友集 cnc操作工工资待遇,2026-10-20,城市均值,false
+wage_cnc_operator_tianjin,CNC操机师傅月薪(天津),11500,元/月,8000,15000,https://www.jobui.com/salary/tianjin-cnccaojishifu/,职友集 天津cnc操机师傅工资,2026-10-20,87.5%岗位8-15K；value取中值,false
+wage_cnc_lathe_national,数控车工月薪(全国),8000,元/月,6000,10000,https://www.jobui.com/salary/quanguo-shukongchegong/,职友集 数控车工工资,2026-10-20,73.3%岗位6-10K；样本截至2026-05-24,false
+density_45_steel,45号钢密度,7.85,g/cm3,,,https://bestaicam.com/tools/metal-weight-calculator,BestAI CAM 金属重量计算器,2026-10-20,工程常用值,false
+density_304_ss,304不锈钢密度,7.93,g/cm3,,,https://bestaicam.com/tools/metal-weight-calculator,BestAI CAM 金属重量计算器,2026-10-20,工程常用值,false
+density_6061_al,6061铝合金密度,2.70,g/cm3,,,https://bestaicam.com/tools/metal-weight-calculator,BestAI CAM 金属重量计算器,2026-10-20,工程常用值,false

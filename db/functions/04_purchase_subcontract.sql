@@ -131,10 +131,10 @@ BEGIN
   UPDATE work_order SET scrap_qty=scrap_qty+shortage WHERE id=op.work_order_id RETURNING * INTO w;
   IF op.completed_qty + op.scrap_qty >= op.input_qty AND op.status='subcontracted' THEN UPDATE wo_operation SET status='done' WHERE id=op.id; END IF;
   -- 成本(不含税)：加工费入工单，扣款冲减工单
-  ex_net := round((fee - ded)/1.13, 2);
+  ex_net := round((fee - ded)/(1+p('vat_rate_general')), 2);
   INSERT INTO wo_cost_entry(work_order_id, cost_type, amount, qty, source_type, source_id) VALUES
-    (w.id, 'subcontract', round(fee/1.13,2), sc.received_good_qty, 'subcontract_settlement', s.id),
-    (w.id, 'subcontract', -(round(fee/1.13,2) - ex_net), over, 'subcontract_settlement', s.id);
+    (w.id, 'subcontract', round(fee/(1+p('vat_rate_general')),2), sc.received_good_qty, 'subcontract_settlement', s.id),
+    (w.id, 'subcontract', -(round(fee/(1+p('vat_rate_general')),2) - ex_net), over, 'subcontract_settlement', s.id);
   PERFORM fn_post_je('subcontract_settlement', s.id, current_date, '委外结算 '||sc.doc_no, jsonb_build_array(
     jsonb_build_object('a','5001','d',ex_net,'wo',w.id,'plant',w.plant_id),
     jsonb_build_object('a','220201','c',ex_net,'party',sc.supplier_id,'plant',w.plant_id)));
@@ -166,8 +166,8 @@ BEGIN
     UPDATE purchase_order_item pi SET invoiced_qty=invoiced_qty+ri.accepted_qty FROM purchase_receipt_item ri WHERE ri.purchase_receipt_id=p_src AND pi.id=ri.po_item_id;
   ELSE
     INSERT INTO invoice_item(invoice_id, goods_name, spec, uom, qty, unit_price_ex_tax, amount_ex_tax, tax_rate, tax_amount, source_line_type, source_line_id)
-    VALUES (inv, '委外加工费', NULL, 'pcs', s.good_qty, round(round(s.payable_amount/1.13,2)/nullif(s.good_qty,0),8),
-            round(s.payable_amount/1.13,2), 0.13, s.payable_amount - round(s.payable_amount/1.13,2), 'subcontract_settlement', s.id);
+    VALUES (inv, '委外加工费', NULL, 'pcs', s.good_qty, round(round(s.payable_amount/(1+p('vat_rate_general')),2)/nullif(s.good_qty,0),8),
+            round(s.payable_amount/(1+p('vat_rate_general')),2), 0.13, s.payable_amount - round(s.payable_amount/(1+p('vat_rate_general')),2), 'subcontract_settlement', s.id);
   END IF;
   SELECT sum(amount_ex_tax), sum(tax_amount) INTO ex, tax FROM invoice_item WHERE invoice_id=inv;
   UPDATE invoice SET amount_ex_tax=ex, tax_amount=tax, status='issued' WHERE id=inv RETURNING * INTO i;
