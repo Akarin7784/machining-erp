@@ -1,0 +1,278 @@
+accepted_qty	合格数量
+account_code	科目编码
+account_id	会计科目
+account_name	科目名称
+account_type	科目类别：资产/负债/权益/收入/费用
+acted_at	操作时间
+action	操作类型 INSERT/UPDATE/DELETE
+actor	操作人(app.user 或数据库用户)
+actual_hours_per_unit	实际单件工时
+address_phone	地址电话(开票用)
+affected_wip_qty	受影响在制品数量
+against_invoice_id	核销/冲减的发票
+ai_request_id	对应的 AI 调用记录
+allocated_amount	本次核销金额
+allowance_qty	损耗定额允许件数=发出×定额
+amount	金额
+amount_ex_tax	不含税金额
+applied	是否已应用到工艺定额
+applied_at	应用时间
+applied_by	应用人
+approval_note	审批意见
+approved_at	审批时间
+approved_by	审批人
+attrition_rate	损耗率
+audit_id	审计主键
+bank_account	开户行及账号
+basis_qty	计价基数数量
+basis_uom	计价基数单位
+batch_no	批次号(炉号)
+bom_id	BOM
+bom_level	BOM 层级(0=成品)
+buyer_addr_phone	购方地址电话
+buyer_bank_account	购方开户行及账号
+buyer_name	购方名称
+buyer_tax_no	购方纳税人识别号(专票必填)
+change_note	变更说明
+closed_at	关账时间
+closing_balance	期末余额
+code	单位编码
+completed_qty	工序完工合格数
+component_id	子件物料
+confidence	AI 置信度 0~1
+cost_cny	本次 AI 调用费用(元)
+cost_type	成本类型：材料/人工/机时/委外/返工/余料冲减/半成品结转等
+credit	贷方金额
+credit_limit	信用额度
+credit_total	本期贷方合计
+current_drawing_id	当前生效图纸版本
+customer_part_no	客户图号/料号
+debit	借方金额
+debit_total	本期借方合计
+deduction	超定额扣款金额
+defect_note	不良描述
+defect_qty	不良数量
+delivered_not_invoiced	已发货未开票金额
+delivered_qty	已发货数量
+delivery_date	交货日期
+delivery_note_id	发货单
+delivery_note_no	对方送货单号
+density_param_key	密度参数
+diameter_mm	直径(mm)
+diff	差异=对账单值-系统值
+direction	sales=销项 / purchase=进项
+disposition	处置意见
+doc_table	单据表名
+due_date	到期日
+emp_code	工号
+emp_name	姓名
+employee_id	员工
+fetched_date	查询日期
+fg_warehouse_id	完工入库仓
+field	核对字段
+file_uri	图纸文件地址
+finished_at	完工时间
+finished_weight_kg	成品重量(kg)
+from_drawing_id	变更前图纸
+from_warehouse_id	调出仓
+generated_at	生成时间
+good_qty	合格数量
+goods_name	货物或应税劳务名称
+gross_qty	毛需求
+heat_treat_cost	热处理费
+heat_treatment	热处理要求
+hours	工时(小时)
+hours_per_day	每日可用工时(产能)
+input	AI 输入 JSON
+inspected_by	检验员
+inspected_qty	检验数量
+inspection_type	incoming 来料/process 工序/final 成品/subcontract 委外回料
+invoice_date	开票日期
+invoice_id	发票
+invoice_no	发票号码(税局)
+invoiced_qty	已开票数量
+is_batch_tracked	是否批次管理
+is_default	是否默认 BOM
+is_example	是否示例数据(无公开来源)
+is_return	是否退货单
+is_reversal	是否冲销记录
+is_rework	是否返工报工
+is_subcontracted	是否委外工序
+item_code	物料编码
+item_kind	raw 原材料/purchased 外购件/semi 半成品/finished 成品/service 服务
+item_name	物料名称
+journal_entry_id	凭证
+kind	AI 任务类型
+last_no	当前流水号
+latency_ms	AI 响应耗时
+ledger_type	receivable 应收 / payable 应付
+length_mm	长度(mm)
+lines	对账单明细 JSON
+machining_cost	机加工费(工时×费率)
+margin_rate	毛利率=1-成本/售价
+material_code	材质
+material_cost	材料费
+memo	摘要
+min_margin	毛利底线，低于即转审批
+mode_of_payment	付款方式
+model	AI 模型标识
+moved_at	发生时间
+movement_type	send 发料 / receive 回料
+mrp_line_id	来源 MRP 行
+name	名称
+name_cn	参数中文名
+net_qty	净需求
+new_data	变更后数据
+note	备注
+old_data	变更前数据
+on_hand_qty	现存量
+op_name	工序名称
+opening_balance	期初余额
+order_date	下单日期
+output	AI 输出 JSON
+over_loss_qty	超出定额件数
+overhead_factor	管理费系数
+p90_finish	P90 完工日
+paid_amount	收/付款金额
+param_key	参数键
+parent_item_id	上级物料
+parent_work_order_id	父工单
+party_code	往来单位编码
+party_name	往来单位名称
+party_type	customer 客户/supplier 供应商/subcontractor 外协厂
+pay_mode	计薪方式：计件/计时/月薪
+payable_amount	应付金额=加工费-扣款
+payment_days	账期(天)
+payment_entry_id	收付款单
+payment_type	receive 收款 / pay 付款
+period	期间 YYYY-MM
+piece_rate	计件单价(示例)
+planned_end	计划完工
+planned_start	计划开工
+plant_code	工厂编码
+plant_name	工厂名称
+plated_area_dm2	镀层面积(dm²)
+po_item_id	采购订单行
+posted_at	记账时间
+posting_ts	过账时间戳
+predicted_finish	AI 预测完工日
+prefix	单据前缀
+price_basis	计价方式 kg/dm2/pcs
+price_param_key	单价参数
+processing_fee	加工费=合格数×基数×单价
+produced_qty	已入库数量
+production_plan_id	生产计划
+prompt_version	提示词版本
+proposed_hours	建议新定额
+purchase_order_id	采购订单
+purchase_receipt_id	采购入库单
+purchased_cost	外购件成本
+qc_required	是否需要检验
+qty_after	结存数量
+quantity	基准数量
+quotation_id	报价单
+quotation_item_id	报价行
+quote_date	报价日期
+quoted_hours	报价时的定额工时
+range_high	区间上限
+range_low	区间下限
+reason	原因
+receipt_date	收货日期
+received_at	收货时间
+received_defect_qty	回料不良数
+received_good_qty	回料合格数
+received_qty	到货/已收数量
+red_of	被冲红的原发票
+ref_id	来源单据 ID
+ref_item_id	关联物料
+ref_type	来源单据类型
+rejected_qty	不合格退回数量
+released_at	生效时间
+reported_at	报工时间
+requested_by	发起人
+return_against	原发货单
+return_against_item_id	原发货行
+return_reason	退货原因
+returned_qty	已退货数量
+reused_work_order_id	再利用的工单
+reverses_id	被冲销的原流水
+revision	版本号
+revision_of	改价前的原报价
+rework_of_inspection_id	返工来源检验单
+rework_pending_qty	待返工数量
+rework_qty	返工数量
+risk_note	风险说明
+routing_id	工艺路线
+routing_name	工艺路线名称
+routing_op_id	工艺路线工序
+row_pk	行主键
+sales_order_id	销售订单
+sales_order_item_id	销售订单行
+sched_end	排产结束
+sched_start	排产开始
+scrap_qty	报废数量
+seller_name	销方名称
+seller_tax_no	销方税号
+sent_qty	发出数量
+seq	工序号
+settled_at	结算时间
+setup_hours	准备工时(每批)
+shipped_at	发出时间
+shortage_qty	短少数量
+similar_item_id	AI 匹配的历史相似件
+so_item_id	销售订单行
+source_id	来源 ID
+source_line_id	来源行 ID
+source_line_type	来源行类型
+source_type	来源类型
+source_work_order_id	产生余料的工单
+spec	规格型号
+special_cost	特殊费用(加急、运费等)
+started_at	开工时间
+statement_value	对账单上的值
+std_hours	标准单件工时
+stock_diameter_mm	坯料直径
+stock_length_mm	坯料长度
+stock_uom	库存单位
+subcon_basis	委外计价基数类型
+subcon_warehouse_id	外协仓
+subcontract_order_id	委外单
+suggested_price	建议售价=成本/(1-毛利底线)
+surface_cost	表面处理费
+surface_treatment	表面处理要求
+system_value	系统值
+table_name	表名
+tax_amount	税额
+tax_rate	税率
+template_id	参数模板
+tenant_code	租户编码
+tenant_name	租户名称(开票销方名称)
+tightest_tolerance_mm	最严公差
+title	来源标题
+to_drawing_id	变更后图纸
+to_status	目标状态
+to_warehouse_id	调入仓
+total_amount	价税合计
+transit_warehouse_id	在途仓
+unit	单位
+unit_cost	单件成本=(各项费用)×管理费系数
+unit_price_ex_tax	不含税单价
+unit_rate	单价/费率
+uom	单位
+url	来源链接
+valid_till	有效期至
+value	参数值
+value_after	结存金额
+value_num	数值
+value_text	文本值
+verdict	核对结论
+voucher_line_id	来源单据行
+weight_kg	重量(kg)
+wh_code	仓库编码
+wh_name	仓库名称
+wh_type	raw/wip/fg/subcontract/transit/remnant/reject
+wo_operation_id	工单工序
+work_date	日期
+workstation_id	设备/工作中心
+ws_code	设备编码
+ws_name	设备名称
