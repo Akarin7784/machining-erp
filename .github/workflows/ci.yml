@@ -1,0 +1,19 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  sql:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install PostgreSQL 16 + pgTAP + pg_prove
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-16 postgresql-16-pgtap libtap-parser-sourcehandler-pgtap-perl
+      - name: Seed is up to date with params/
+        run: |
+          python3 scripts/gen_seed.py
+          git diff --exit-code db/seed
+      - name: Run migrations, scenarios and pgTAP tests
+        env:
+          PGBIN: /usr/lib/postgresql/16/bin
+        run: bash scripts/run_all.sh
